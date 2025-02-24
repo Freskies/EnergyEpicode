@@ -1,0 +1,28 @@
+package org.energyepicode.provincia;
+
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping ("/api/province")
+@RequiredArgsConstructor
+public class ProvinciaController {
+	private final ProvinciaService provinciaService;
+
+	@GetMapping
+	public List<Provincia> getAllProvince() {
+		return provinciaService.findAll();
+	}
+
+	@PostMapping
+	public ResponseEntity<Provincia> createProvincia(@RequestBody Provincia provincia) {
+		Provincia saved = provinciaService.save(provincia);
+		return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+	}
+
+}

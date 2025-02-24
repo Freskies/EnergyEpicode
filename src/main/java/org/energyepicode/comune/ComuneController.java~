@@ -1,0 +1,43 @@
+package org.energyepicode.comune;
+
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping ("/comune")
+@RequiredArgsConstructor
+public class ComuneController {
+	private final ComuneService comuneService;
+
+	@GetMapping
+	public ResponseEntity<List<ComuneResponse>> findAll () {
+		return ResponseEntity.ok(ComuneService.findAll());
+	}
+
+	@GetMapping ("/{id}")
+	public ResponseEntity<ComuneResponse> findById (@PathVariable Long id) {
+		return ResponseEntity.ok(ComuneService.findById(id));
+	}
+
+	@PostMapping
+	public ResponseEntity<ComuneResponse> save (@RequestBody ComuneRequest request) {
+		return ResponseEntity.status(HttpStatus.CREATED).body(ComuneService.save(request));
+	}
+
+	@PutMapping ("/{id}")
+	public ResponseEntity<ComuneResponse> update (@PathVariable Long id, @RequestBody ComuneRequest request) {
+		return ResponseEntity.ok(ComuneService.update(id, request));
+	}
+
+	@DeleteMapping ("/{id}")
+	public ResponseEntity<Void> delete (@PathVariable Long id) {
+		ComuneService.delete(id);
+		return ResponseEntity.noContent().build();
+	}
+
+}

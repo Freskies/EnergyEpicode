@@ -36,8 +36,8 @@ public class Customer {
 	private String phone;
 
 	private String emailContact;
-	private String nomeContact;
-	private String cognomeContact;
+	private String nameContact;
+	private String surnameContact;
 	private String phoneContact;
 
 	private String logo;
