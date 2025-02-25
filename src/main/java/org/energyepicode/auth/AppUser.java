@@ -21,6 +21,18 @@ public class AppUser implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
+    private String name;
+
+    @Column(nullable = false)
+    private String cognome;
+
+    @Column(nullable = false)
+    private String email;
+
+    @Column(nullable = false)
+    private String avatar;
+
     @Column(nullable = false, unique = true)
     private String username;
 
@@ -56,8 +68,5 @@ public class AppUser implements UserDetails {
         this.accountNonExpired = accountNonExpired;
         this.credentialsNonExpired = credentialsNonExpired;
         this.accountNonLocked = accountNonLocked;
-   }
-
-
-
+    }
 }

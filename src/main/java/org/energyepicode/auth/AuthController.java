@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import java.util.Set;
+import java.util.HashSet;
 
 import java.util.Set;
 
@@ -18,20 +20,28 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody RegisterRequest registerRequest) {
+
         appUserService.registerUser(
                 registerRequest.getUsername(),
                 registerRequest.getPassword(),
+                registerRequest.getName(),
+                registerRequest.getCognome(),
+                registerRequest.getEmail(),
+                registerRequest.getAvatar(),
                 Set.of(Role.ROLE_USER) // Assegna il ruolo di default
         );
+
         return ResponseEntity.ok("Registrazione avvenuta con successo");
     }
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest loginRequest) {
+
         String token = appUserService.authenticateUser(
                 loginRequest.getUsername(),
                 loginRequest.getPassword()
         );
+
         return ResponseEntity.ok(new AuthResponse(token));
     }
 }
