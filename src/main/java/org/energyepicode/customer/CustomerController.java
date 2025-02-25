@@ -1,6 +1,7 @@
 package org.energyepicode.customer;
 
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.energyepicode.GeneralResponse;
 import org.springframework.beans.BeanUtils;
@@ -28,21 +29,21 @@ public class CustomerController {
 	// GET /api/customers?orderByCompanyName=&filterByMinAnnualTurnover=&page=&size=...
 	@GetMapping
 	//da sistemare, con la customerResponse TODO,, problema
-	public Page<Customer> getCustomers(
-		@RequestParam(value = "orderByCompanyName", required = false) String orderByCompanyName,
-		@RequestParam(value = "orderByAnnualTurnover", required = false) String orderByAnnualTurnover,
-		@RequestParam(value = "orderByInsertionDate", required = false) String orderByInsertionDate,
-		@RequestParam(value = "orderByLastContactDate", required = false) String orderByLastContactDate,
-		@RequestParam(value = "orderByProvince", required = false) String orderByProvince,
-		@RequestParam(value = "filterByMinAnnualTurnover", required = false) Double minAnnualTurnover,
-		@RequestParam(value = "filterByMaxAnnualTurnover", required = false) Double maxAnnualTurnover,
-		@RequestParam(value = "filterByMinInsertionDate", required = false) @DateTimeFormat (iso = DateTimeFormat.ISO.DATE) LocalDate minInsertionDate,
-		@RequestParam(value = "filterByMaxInsertionDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate maxInsertionDate,
-		@RequestParam(value = "filterByMinLastContactDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate minLastContactDate,
-		@RequestParam(value = "filterByMaxLastContactDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate maxLastContactDate,
-		@RequestParam(value = "filterByCompanyName", required = false) String filterByCompanyName,
-		@RequestParam(value = "page", defaultValue = "0") int page,
-		@RequestParam(value = "size", defaultValue = "10") int size) {
+	public Page<Customer> getCustomers (
+		@RequestParam (value = "orderByCompanyName", required = false) String orderByCompanyName,
+		@RequestParam (value = "orderByAnnualTurnover", required = false) String orderByAnnualTurnover,
+		@RequestParam (value = "orderByInsertionDate", required = false) String orderByInsertionDate,
+		@RequestParam (value = "orderByLastContactDate", required = false) String orderByLastContactDate,
+		@RequestParam (value = "orderByProvince", required = false) String orderByProvince,
+		@RequestParam (value = "filterByMinAnnualTurnover", required = false) Double minAnnualTurnover,
+		@RequestParam (value = "filterByMaxAnnualTurnover", required = false) Double maxAnnualTurnover,
+		@RequestParam (value = "filterByMinInsertionDate", required = false) @DateTimeFormat (iso = DateTimeFormat.ISO.DATE) LocalDate minInsertionDate,
+		@RequestParam (value = "filterByMaxInsertionDate", required = false) @DateTimeFormat (iso = DateTimeFormat.ISO.DATE) LocalDate maxInsertionDate,
+		@RequestParam (value = "filterByMinLastContactDate", required = false) @DateTimeFormat (iso = DateTimeFormat.ISO.DATE) LocalDate minLastContactDate,
+		@RequestParam (value = "filterByMaxLastContactDate", required = false) @DateTimeFormat (iso = DateTimeFormat.ISO.DATE) LocalDate maxLastContactDate,
+		@RequestParam (value = "filterByCompanyName", required = false) String filterByCompanyName,
+		@RequestParam (value = "page", defaultValue = "0") int page,
+		@RequestParam (value = "size", defaultValue = "10") int size) {
 
 		//costruisco la risposta in base ai parametri ricevuti dalla richiesta
 		Specification<Customer> spec = Specification.where(null);
@@ -63,15 +64,15 @@ public class CustomerController {
 
 
 		List<Sort.Order> orders = new ArrayList<>();
-		if(orderByCompanyName != null)
+		if (orderByCompanyName != null)
 			orders.add(new Sort.Order(Sort.Direction.fromString(orderByCompanyName), "companyName"));
-		if(orderByAnnualTurnover != null)
+		if (orderByAnnualTurnover != null)
 			orders.add(new Sort.Order(Sort.Direction.fromString(orderByAnnualTurnover), "annualTurnover"));
-		if(orderByInsertionDate != null)
+		if (orderByInsertionDate != null)
 			orders.add(new Sort.Order(Sort.Direction.fromString(orderByInsertionDate), "insertionDate"));
-		if(orderByLastContactDate != null)
+		if (orderByLastContactDate != null)
 			orders.add(new Sort.Order(Sort.Direction.fromString(orderByLastContactDate), "lastContactDate"));
-		if(orderByProvince != null)
+		if (orderByProvince != null)
 
 			orders.add(new Sort.Order(Sort.Direction.fromString(orderByProvince), "indirizzoLegale.comune.provincia.nome"));
 
@@ -81,36 +82,31 @@ public class CustomerController {
 	}
 
 	// GET /api/customers/{id}
-	@GetMapping("/{id}")
-	public ResponseEntity<Customer> getCustomer(@PathVariable Long id) {
-		return customerService.findById(id)
-			.map(customer -> ResponseEntity.ok(customer))
-			.orElse(ResponseEntity.notFound().build());
+	@GetMapping ("/{id}")
+	public Customer getCustomer (@PathVariable Long id) {
+		return customerService.findById(id).orElseThrow(() -> new EntityNotFoundException("Customer con id " + id + " non trovato"));
 	}
 
 	// POST /api/customers
 	@PostMapping
-	@ResponseStatus(HttpStatus.CREATED)
-	public GeneralResponse createCustomer(@RequestBody Customer customer) {
+	@ResponseStatus (HttpStatus.CREATED)
+	public GeneralResponse createCustomer (@RequestBody Customer customer) {
 		customerService.save(customer);
 		return new GeneralResponse(customer.getId());
 	}
 
 	// PATCH /api/customers/{id}
-	@PatchMapping("/{id}")
-	public ResponseEntity<Customer> updateCustomer(@PathVariable Long id, @RequestBody Customer customerDetails) {
-		return customerService.findById(id).map(existing -> {
-			BeanUtils.copyProperties(customerDetails, existing );
-			Customer updated = customerService.save(existing);
-			return ResponseEntity.ok(updated);
-		}).orElse(ResponseEntity.notFound().build());
+	@PatchMapping ("/{id}")
+	public Customer updateCustomer (@PathVariable Long id, @RequestBody Customer customerDetails) {
+		Customer updated = customerService.findById(id).orElseThrow(() -> new EntityNotFoundException("Customer con id " + id + " non trovato"));
+		BeanUtils.copyProperties(customerDetails, updated);
+		return customerService.save(updated);
 	}
 
 	// DELETE /api/customers/{id}
-	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> deleteCustomer(@PathVariable Long id) {
+	@DeleteMapping ("/{id}")
+	public void deleteCustomer (@PathVariable Long id) {
 		customerService.delete(id);
-		return ResponseEntity.noContent().build();
 	}
 
 }

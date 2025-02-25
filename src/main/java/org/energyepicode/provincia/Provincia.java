@@ -20,4 +20,9 @@ public class Provincia {
 
 	@Column (nullable = false, unique = true)
 	private String sigla;
+
+	@Column (nullable = false)
+	private String regione;
+
+
 }
