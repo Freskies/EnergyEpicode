@@ -23,6 +23,10 @@ public class ProvinciaService {
 		return provinciaRepository.findBySigla(sigla);
 	}
 
+	public Optional<Provincia> findByNome(String nome) {
+		return provinciaRepository.findByNome(nome);
+	}
+
 	public List<Provincia> findAll() {
 		return provinciaRepository.findAll();
 	}

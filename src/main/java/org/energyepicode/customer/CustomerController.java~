@@ -1,7 +1,10 @@
 package org.energyepicode.customer;
 
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.energyepicode.GeneralResponse;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -25,7 +28,8 @@ public class CustomerController {
 
 	// GET /api/customers?orderByCompanyName=&filterByMinAnnualTurnover=&page=&size=...
 	@GetMapping
-	public ResponseEntity<Page<Customer>> getCustomers(
+	//da sistemare, con la customerResponse TODO,, problema
+	public Page<Customer> getCustomers(
 		@RequestParam(value = "orderByCompanyName", required = false) String orderByCompanyName,
 		@RequestParam(value = "orderByAnnualTurnover", required = false) String orderByAnnualTurnover,
 		@RequestParam(value = "orderByInsertionDate", required = false) String orderByInsertionDate,
@@ -74,46 +78,28 @@ public class CustomerController {
 
 		Pageable pageable = PageRequest.of(page, size, Sort.by(orders));
 		Page<Customer> result = customerService.findCustomers(spec, pageable);
-		return ResponseEntity.ok(result);
+		return result;
 	}
 
 	// GET /api/customers/{id}
 	@GetMapping("/{id}")
-	public ResponseEntity<Customer> getCustomer(@PathVariable Long id) {
-		return customerService.findById(id)
-			.map(customer -> ResponseEntity.ok(customer))
-			.orElse(ResponseEntity.notFound().build());
+	public Customer getCustomer(@PathVariable Long id) {
+		return customerService.findById(id).orElseThrow(()->new EntityNotFoundException("Customer con id " + id + " non trovato"));
 	}
 
 	// POST /api/customers
 	@PostMapping
-	public ResponseEntity<Customer> createCustomer(@RequestBody Customer customer) {
-		Customer saved = customerService.save(customer);
-		return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+	@ResponseStatus(HttpStatus.CREATED)
+	public GeneralResponse createCustomer(@RequestBody Customer customer) {
+		customerService.save(customer);
+		return new GeneralResponse(customer.getId());
 	}
 
 	// PATCH /api/customers/{id}
 	@PatchMapping("/{id}")
 	public ResponseEntity<Customer> updateCustomer(@PathVariable Long id, @RequestBody Customer customerDetails) {
 		return customerService.findById(id).map(existing -> {
-			// Aggiornamento parziale dei campi
-			existing.setCompanyName(customerDetails.getCompanyName());
-			existing.setVatNumber(customerDetails.getVatNumber());
-			existing.setEmail(customerDetails.getEmail());
-			existing.setInsertionDate(customerDetails.getInsertionDate());
-			existing.setLastContactDate(customerDetails.getLastContactDate());
-			existing.setAnnualTurnover(customerDetails.getAnnualTurnover());
-			existing.setPec(customerDetails.getPec());
-			existing.setPhone(customerDetails.getPhone());
-			existing.setEmailContact(customerDetails.getEmailContact());
-			existing.setNameContact(customerDetails.getNameContact());
-			existing.setSurnameContact(customerDetails.getSurnameContact());
-			existing.setPhoneContact(customerDetails.getPhoneContact());
-			existing.setLogo(customerDetails.getLogo());
-			existing.setIndirizzoLegale(customerDetails.getIndirizzoLegale());
-			existing.setIndirizzoOperativo(customerDetails.getIndirizzoOperativo());
-			existing.setTipo(customerDetails.getTipo());
-
+			BeanUtils.copyProperties(customerDetails, existing );
 			Customer updated = customerService.save(existing);
 			return ResponseEntity.ok(updated);
 		}).orElse(ResponseEntity.notFound().build());

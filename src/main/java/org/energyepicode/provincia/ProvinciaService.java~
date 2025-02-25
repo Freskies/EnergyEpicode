@@ -22,4 +22,12 @@ public class ProvinciaService {
 	public Optional<Provincia> findBySigla(String sigla) {
 		return provinciaRepository.findBySigla(sigla);
 	}
+
+	public Optional<Provincia> findByCodiceStorico(String codice) {
+		return provinciaRepository.findByCodiceStorico(codice);
+	}
+
+	public List<Provincia> findAll() {
+		return provinciaRepository.findAll();
+	}
 }
