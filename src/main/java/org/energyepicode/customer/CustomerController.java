@@ -90,14 +90,16 @@ public class CustomerController {
 	// POST /api/customers
 	@PostMapping
 	@ResponseStatus (HttpStatus.CREATED)
-	public GeneralResponse createCustomer (@RequestBody Customer customer) {
-		customerService.save(customer);
-		return new GeneralResponse(customer.getId());
+	public GeneralResponse createCustomer (@RequestBody CustomerRequest customer) {
+		Customer customerToSave = new Customer();
+		BeanUtils.copyProperties(customer, customerToSave);
+		customerService.save(customerToSave);
+		return new GeneralResponse(customerToSave.getId());
 	}
 
 	// PATCH /api/customers/{id}
 	@PatchMapping ("/{id}")
-	public Customer updateCustomer (@PathVariable Long id, @RequestBody Customer customerDetails) {
+	public Customer updateCustomer (@PathVariable Long id, @RequestBody CustomerRequest customerDetails) {
 		Customer updated = customerService.findById(id).orElseThrow(() -> new EntityNotFoundException("Customer con id " + id + " non trovato"));
 		BeanUtils.copyProperties(customerDetails, updated);
 		return customerService.save(updated);

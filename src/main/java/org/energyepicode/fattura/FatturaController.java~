@@ -71,15 +71,13 @@ public class FatturaController {
 	@PostMapping
 	@ResponseStatus (HttpStatus.CREATED)
 	public GeneralResponse createFattura (@RequestBody FatturaRequest fattura) {
-		Fattura fatturaToSave = new Fattura();
-		BeanUtils.copyProperties(fattura, fatturaToSave);
-		Fattura saved = fatturaService.save(fatturaToSave);
+		Fattura saved = fatturaService.save(fattura);
 		return new GeneralResponse(saved.getId());
 	}
 
 	// PATCH /api/customers/invoices/{id}
 	@PatchMapping ("/{id}")
-	public Fattura updateFattura (@PathVariable Long id, @RequestBody FatturaRequest fatturaDetails) {
+	public Fattura updateFattura (@PathVariable Long id, @RequestBody Fattura fatturaDetails) {
 		Fattura updated = fatturaService.findById(id).orElseThrow(() -> new EntityNotFoundException("Fattura con id " + id + " non trovata"));
 		BeanUtils.copyProperties(fatturaDetails, updated);
 		return updated;

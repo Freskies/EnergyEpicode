@@ -1,6 +1,8 @@
 package org.energyepicode.customer;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,23 +14,19 @@ import java.util.Date;
 import java.util.List;
 
 @Data
-@Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table (name = "Customer")
-public class Customer {
-	@Id
-	@GeneratedValue (strategy = GenerationType.IDENTITY)
-	private Long id;
+public class CustomerRequest {
 
 	private String companyName;
 	private String vatNumber;
+	@Email
 	private String email;
 
-	@Temporal(TemporalType.DATE)
+
 	private Date insertionDate;
 
-	@Temporal(TemporalType.DATE)
+
 	private Date lastContactDate;
 
 	private Double annualTurnover;
@@ -42,20 +40,12 @@ public class Customer {
 
 	private String logo;
 
-	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "indirizzo_legale_id")
-	private Indirizzo indirizzoOperativo;
+	private Indirizzo indirizzoLegale;
 
-	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "indirizzo_operativo_id")
 	private Indirizzo indirizzoOperativo;
 
 	// Tipo: PA, SAS, SPA, SRL
+
 	private String tipo;
-
-
-	@OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
-	private List<Fattura> fatture = new ArrayList<>();
-
 
 }

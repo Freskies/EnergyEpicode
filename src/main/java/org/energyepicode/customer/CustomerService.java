@@ -2,6 +2,7 @@ package org.energyepicode.customer;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -33,5 +34,6 @@ public class CustomerService {
 	public Page<Customer> findCustomers(Specification<Customer> spec, Pageable pageable) {
 		return customerRepository.findAll(spec, pageable);
 	}
+
 
 }

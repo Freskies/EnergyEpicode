@@ -2,6 +2,7 @@ package org.energyepicode.customer;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -18,7 +19,7 @@ import java.util.Optional;
 public class CustomerService {
 	private final CustomerRepository customerRepository;
 
-	public Customer save(Customer customer) {
+	public Customer save(CustomerRequest customer) {
 		return customerRepository.save(customer);
 	}
 
@@ -30,9 +31,9 @@ public class CustomerService {
 		customerRepository.deleteById(id);
 	}
 
-	// Implementa metodi per filtraggio, ordinamento e paginazione
 	public Page<Customer> findCustomers(Specification<Customer> spec, Pageable pageable) {
 		return customerRepository.findAll(spec, pageable);
 	}
+
 
 }
