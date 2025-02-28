@@ -34,6 +34,20 @@ public class CustomerController {
 	// GET /api/customers?orderByCompanyName=&filterByMinAnnualTurnover=&page=&size=...
 	@GetMapping
 	//da sistemare, con la customerResponse TODO,, problema
+	public Page<CustomerResponse> findCustomers (Specification<Customer> spec, Pageable pageable) {
+		Page<Customer> customers = customerService.findAll(spec, pageable);
+		return customers.map(this::toCustomerResponse);
+
+	}
+
+	private CustomerResponse toCustomerResponse (Customer customer) {
+		CustomerResponse customerResponse = new CustomerResponse();
+		BeanUtils.copyProperties(customer, customerResponse);
+		return customerResponse;
+	}
+
+	@GetMapping
+	//da sistemare, con la customerResponse TODO,, problema
 	public Page<CustomerResponse> getCustomers (
 		@RequestParam (value = "orderByCompanyName", required = false) String orderByCompanyName,
 		@RequestParam (value = "orderByAnnualTurnover", required = false) String orderByAnnualTurnover,

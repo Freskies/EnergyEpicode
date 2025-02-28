@@ -31,20 +31,6 @@ public class CustomerController {
 	private final IndirizzoService indirizzoService;
 	private final ComuneService comuneService;
 
-	// GET /api/customers?orderByCompanyName=&filterByMinAnnualTurnover=&page=&size=...
-	@GetMapping
-	//da sistemare, con la customerResponse TODO,, problema
-	public Page<CustomerResponse> findCustomers (Specification<Customer> spec, Pageable pageable) {
-		Page<Customer> customers = customerRepository.findAll(spec, pageable);
-		return customers.map(this::toCustomerResponse);
-
-	}
-
-	private CustomerResponse toCustomerResponse (Customer customer) {
-		CustomerResponse customerResponse = new CustomerResponse();
-		BeanUtils.copyProperties(customer, customerResponse);
-		return customerResponse;
-	}
 
 	@GetMapping
 	//da sistemare, con la customerResponse TODO,, problema

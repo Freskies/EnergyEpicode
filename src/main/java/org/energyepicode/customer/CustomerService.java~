@@ -42,4 +42,3 @@ public class CustomerService {
 		BeanUtils.copyProperties(customer, customerResponse);
 		return customerResponse;
 	}
-}
