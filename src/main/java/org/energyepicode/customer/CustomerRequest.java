@@ -8,6 +8,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.energyepicode.comune.Comune;
 import org.energyepicode.fattura.Fattura;
 import org.energyepicode.indirizzo.Indirizzo;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -43,11 +44,12 @@ public class CustomerRequest {
 
 	private String logo;
 
-	@JsonIgnore
-		private Indirizzo indirizzoLegale;
-
-	@JsonIgnore
-	private Indirizzo indirizzoOperativo;
+	private String via;
+	private String civico;
+	private String localita;
+	private String cap;
+	@JsonIgnoreProperties ({"id", "provincia"})
+	private Comune comune;
 
 	// Tipo: PA, SAS, SPA, SRL
 

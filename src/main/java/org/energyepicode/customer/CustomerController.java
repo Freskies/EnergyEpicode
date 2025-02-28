@@ -4,6 +4,9 @@ package org.energyepicode.customer;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.energyepicode.GeneralResponse;
+import org.energyepicode.comune.ComuneService;
+import org.energyepicode.indirizzo.Indirizzo;
+import org.energyepicode.indirizzo.IndirizzoService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,6 +28,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CustomerController {
 	private final CustomerService customerService;
+	private final IndirizzoService indirizzoService;
+	private final ComuneService comuneService;
 
 	// GET /api/customers?orderByCompanyName=&filterByMinAnnualTurnover=&page=&size=...
 	@GetMapping
@@ -92,7 +97,16 @@ public class CustomerController {
 	@ResponseStatus (HttpStatus.CREATED)
 	public GeneralResponse createCustomer (@RequestBody CustomerRequest customer) {
 		Customer customerToSave = new Customer();
+		Indirizzo indirizzoToSave = new Indirizzo();
+		BeanUtils.copyProperties(customer, indirizzoToSave);
+		if (comuneService.findByNomeIgnoreCase(customer.getComune().getNome()).isPresent()) {
+			indirizzoToSave.setComune(comuneService.findByNomeIgnoreCase(customer.getComune().getNome()).get());
+		}else{
+			throw new EntityNotFoundException("Comune non trovato");
+		}
+
 		BeanUtils.copyProperties(customer, customerToSave);
+		customerToSave.setIndirizzoLegale(indirizzoService.save(indirizzoToSave));
 		customerService.save(customerToSave);
 		return new GeneralResponse(customerToSave.getId());
 	}
