@@ -34,7 +34,7 @@ public class CustomerController {
 	// GET /api/customers?orderByCompanyName=&filterByMinAnnualTurnover=&page=&size=...
 	@GetMapping
 	//da sistemare, con la customerResponse TODO,, problema
-	public Page<Customer> getCustomers (
+	public Page<CustomerResponse> getCustomers (
 		@RequestParam (value = "orderByCompanyName", required = false) String orderByCompanyName,
 		@RequestParam (value = "orderByAnnualTurnover", required = false) String orderByAnnualTurnover,
 		@RequestParam (value = "orderByInsertionDate", required = false) String orderByInsertionDate,
@@ -82,7 +82,7 @@ public class CustomerController {
 			orders.add(new Sort.Order(Sort.Direction.fromString(orderByProvince), "indirizzoLegale.comune.provincia.nome"));
 
 		Pageable pageable = PageRequest.of(page, size, Sort.by(orders));
-		Page<Customer> result = customerService.findCustomers(spec, pageable);
+		Page<CustomerResponse> result = customerService.findCustomers(spec, pageable);
 		return result;
 	}
 

@@ -19,21 +19,28 @@ import java.util.Optional;
 public class CustomerService {
 	private final CustomerRepository customerRepository;
 
-	public Customer save(Customer customer) {
+	public Customer save (Customer customer) {
 		return customerRepository.save(customer);
 	}
 
-	public Optional<Customer> findById(Long id) {
+	public Optional<Customer> findById (Long id) {
 		return customerRepository.findById(id);
 	}
 
-	public void delete(Long id) {
+	public void delete (Long id) {
 		customerRepository.deleteById(id);
 	}
 
-	public Page<Customer> findCustomers(Specification<Customer> spec, Pageable pageable) {
-		return customerRepository.findAll(spec, pageable);
+	public Page<CustomerResponse> findCustomers (Specification<Customer> spec, Pageable pageable) {
+		Page<Customer> customers = customerRepository.findAll(spec, pageable);
+		return customers.map(this::toCustomerResponse);
+
 	}
 
+	private CustomerResponse toCustomerResponse (Customer customer) {
+		CustomerResponse customerResponse = new CustomerResponse();
+		BeanUtils.copyProperties(customer, customerResponse);
+		return customerResponse;
+	}
 
 }

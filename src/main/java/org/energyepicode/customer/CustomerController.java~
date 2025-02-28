@@ -34,7 +34,7 @@ public class CustomerController {
 	// GET /api/customers?orderByCompanyName=&filterByMinAnnualTurnover=&page=&size=...
 	@GetMapping
 	//da sistemare, con la customerResponse TODO,, problema
-	public Page<Customer> getCustomers (
+	public Page<CustomerResponse> getCustomers (
 		@RequestParam (value = "orderByCompanyName", required = false) String orderByCompanyName,
 		@RequestParam (value = "orderByAnnualTurnover", required = false) String orderByAnnualTurnover,
 		@RequestParam (value = "orderByInsertionDate", required = false) String orderByInsertionDate,
@@ -51,7 +51,7 @@ public class CustomerController {
 		@RequestParam (value = "size", defaultValue = "10") int size) {
 
 		//costruisco la risposta in base ai parametri ricevuti dalla richiesta
-		Specification<Customer> spec = Specification.where(null);
+		Specification<CustomerResponse> spec = Specification.where(null);
 		if (minAnnualTurnover != null)
 			spec = spec.and((root, query, cb) -> cb.greaterThanOrEqualTo(root.get("annualTurnover"), minAnnualTurnover));
 		if (maxAnnualTurnover != null)
@@ -82,7 +82,7 @@ public class CustomerController {
 			orders.add(new Sort.Order(Sort.Direction.fromString(orderByProvince), "indirizzoLegale.comune.provincia.nome"));
 
 		Pageable pageable = PageRequest.of(page, size, Sort.by(orders));
-		Page<Customer> result = customerService.findCustomers(spec, pageable);
+		Page<CustomerResponse> result = customerService.findCustomers(spec, pageable);
 		return result;
 	}
 
@@ -99,8 +99,8 @@ public class CustomerController {
 		Customer customerToSave = new Customer();
 		Indirizzo indirizzoToSave = new Indirizzo();
 		BeanUtils.copyProperties(customer, indirizzoToSave);
-		if (comuneService.findByNome(customer.getComune().getNome()).isPresent()) {
-			indirizzoToSave.setComune(comuneService.findByNome(customer.getComune().getNome()).get());
+		if (comuneService.findByNomeIgnoreCase(customer.getComune().getNome()).isPresent()) {
+			indirizzoToSave.setComune(comuneService.findByNomeIgnoreCase(customer.getComune().getNome()).get());
 		}else{
 			throw new EntityNotFoundException("Comune non trovato");
 		}
