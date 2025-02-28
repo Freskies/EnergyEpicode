@@ -42,7 +42,7 @@ public class Customer {
 
 	private String logo;
 
-	@OneToOne(cascade = CascadeType.ALL)
+	@OneToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
 	@JoinColumn(name = "indirizzo_legale_id")
 	private Indirizzo indirizzoLegale;
 

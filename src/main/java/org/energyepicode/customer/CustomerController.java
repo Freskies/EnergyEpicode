@@ -98,15 +98,19 @@ public class CustomerController {
 	public GeneralResponse createCustomer (@RequestBody CustomerRequest customer) {
 		Customer customerToSave = new Customer();
 		Indirizzo indirizzoToSave = new Indirizzo();
+		indirizzoToSave.setVia(customer.getVia());
+		indirizzoToSave.setCap(customer.getCap());
+		indirizzoToSave.setCivico(customer.getCivico());
+		indirizzoToSave.setLocalita(customer.getLocalita());
 		BeanUtils.copyProperties(customer, indirizzoToSave);
 		if (comuneService.findByNomeIgnoreCase(customer.getComune().getNome()).isPresent()) {
 			indirizzoToSave.setComune(comuneService.findByNomeIgnoreCase(customer.getComune().getNome()).get());
-		}else{
+		} else {
 			throw new EntityNotFoundException("Comune non trovato");
 		}
-
+		indirizzoToSave = indirizzoService.save(indirizzoToSave);
 		BeanUtils.copyProperties(customer, customerToSave);
-		customerToSave.setIndirizzoLegale(indirizzoService.save(indirizzoToSave));
+		customerToSave.setIndirizzoLegale(indirizzoToSave);
 		customerService.save(customerToSave);
 		return new GeneralResponse(customerToSave.getId());
 	}

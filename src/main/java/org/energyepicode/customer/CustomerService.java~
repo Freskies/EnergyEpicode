@@ -39,7 +39,7 @@ public class CustomerService {
 
 	private CustomerResponse toCustomerResponse (Customer customer) {
 		CustomerResponse customerResponse = new CustomerResponse();
-
+		
 		if (customer.getIndirizzoLegale() != null) {
 			customerResponse.setVia(customer.getIndirizzoLegale().getVia());
 			customerResponse.setCivico(customer.getIndirizzoLegale().getCivico());

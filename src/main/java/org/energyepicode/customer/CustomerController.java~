@@ -51,7 +51,7 @@ public class CustomerController {
 		@RequestParam (value = "size", defaultValue = "10") int size) {
 
 		//costruisco la risposta in base ai parametri ricevuti dalla richiesta
-		Specification<CustomerResponse> spec = Specification.where(null);
+		Specification<Customer> spec = Specification.where(null);
 		if (minAnnualTurnover != null)
 			spec = spec.and((root, query, cb) -> cb.greaterThanOrEqualTo(root.get("annualTurnover"), minAnnualTurnover));
 		if (maxAnnualTurnover != null)
@@ -98,13 +98,17 @@ public class CustomerController {
 	public GeneralResponse createCustomer (@RequestBody CustomerRequest customer) {
 		Customer customerToSave = new Customer();
 		Indirizzo indirizzoToSave = new Indirizzo();
+		indirizzoToSave.setVia(customer.getVia());
+		indirizzoToSave.setCap(customer.getCap());
+		indirizzoToSave.setCivico(customer.getCivico());
+		indirizzoToSave.setLocalita(customer.getLocalita());
 		BeanUtils.copyProperties(customer, indirizzoToSave);
 		if (comuneService.findByNomeIgnoreCase(customer.getComune().getNome()).isPresent()) {
 			indirizzoToSave.setComune(comuneService.findByNomeIgnoreCase(customer.getComune().getNome()).get());
-		}else{
+		} else {
 			throw new EntityNotFoundException("Comune non trovato");
 		}
-
+		indirizzoToSave = indirizzoService.save(indirizzoToSave);
 		BeanUtils.copyProperties(customer, customerToSave);
 		customerToSave.setIndirizzoLegale(indirizzoService.save(indirizzoToSave));
 		customerService.save(customerToSave);
