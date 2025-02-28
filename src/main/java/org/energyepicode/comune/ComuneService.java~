@@ -17,13 +17,15 @@ public class ComuneService {
 	private final ComuneRepository comuneRepository;
 
 
-
 	public Comune save (Comune comune) {
 		return comuneRepository.save(comune);
 	}
 
-	public Optional<Comune> findByNome (String nome) {
+	public Optional<Comune> findByNomeIgnoreCase (String nome) {
 		return comuneRepository.findByNome(nome);
 	}
 
+	public List<Comune> findAll () {
+		return comuneRepository.findAll();
+	}
 }

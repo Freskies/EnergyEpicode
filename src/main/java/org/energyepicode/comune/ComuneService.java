@@ -21,8 +21,8 @@ public class ComuneService {
 		return comuneRepository.save(comune);
 	}
 
-	public Optional<Comune> findByNome (String nome) {
-		return comuneRepository.findByNome(nome);
+	public Optional<Comune> findByNomeIgnoreCase (String nome) {
+		return comuneRepository.findByNome(nome.substring(0,1).toUpperCase() + nome.substring(1).toLowerCase());
 	}
 
 	public List<Comune> findAll () {
