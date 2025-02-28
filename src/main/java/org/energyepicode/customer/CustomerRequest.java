@@ -1,5 +1,7 @@
 package org.energyepicode.customer;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
@@ -8,6 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.energyepicode.fattura.Fattura;
 import org.energyepicode.indirizzo.Indirizzo;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -40,8 +43,10 @@ public class CustomerRequest {
 
 	private String logo;
 
-	private Indirizzo indirizzoLegale;
+	@JsonIgnore
+		private Indirizzo indirizzoLegale;
 
+	@JsonIgnore
 	private Indirizzo indirizzoOperativo;
 
 	// Tipo: PA, SAS, SPA, SRL

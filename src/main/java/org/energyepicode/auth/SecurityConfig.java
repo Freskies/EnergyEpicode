@@ -41,13 +41,12 @@ public class SecurityConfig {
                                 .requestMatchers("/api/admin/**").hasRole("ADMIN") // Solo admin può accedere a questo percorso
                                 .requestMatchers("/api/user/**").hasAnyRole("USER", "ADMIN") // Gli user e admin possono accedere a questo percorso
                                 .requestMatchers(HttpMethod.GET, "/api/**").hasAnyRole("USER", "ADMIN") // Gli user e admin possono fare richieste GET
-                                .anyRequest().authenticated() // Altre richieste devono essere autenticate
+
 
                         //parte sotto per swagger
 
-                        //.requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll() // Accesso libero a Swagger
-                        //.requestMatchers("/api/**").permitAll()
-                        //.anyRequest().permitAll()
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll() // Accesso libero a Swagger
+                        .anyRequest().permitAll()
                 )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
