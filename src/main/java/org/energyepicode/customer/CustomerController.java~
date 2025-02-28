@@ -110,7 +110,7 @@ public class CustomerController {
 		}
 		indirizzoToSave = indirizzoService.save(indirizzoToSave);
 		BeanUtils.copyProperties(customer, customerToSave);
-		customerToSave.setIndirizzoLegale(indirizzoService.save(indirizzoToSave));
+		customerToSave.setIndirizzoLegale(indirizzoToSave);
 		customerService.save(customerToSave);
 		return new GeneralResponse(customerToSave.getId());
 	}

@@ -30,26 +30,4 @@ public class CustomerService {
 	public void delete (Long id) {
 		customerRepository.deleteById(id);
 	}
-
-	public Page<CustomerResponse> findCustomers (Specification<Customer> spec, Pageable pageable) {
-		Page<Customer> customers = customerRepository.findAll(spec, pageable);
-		return customers.map(this::toCustomerResponse);
-
-	}
-
-	private CustomerResponse toCustomerResponse (Customer customer) {
-		CustomerResponse customerResponse = new CustomerResponse();
-
-		if (customer.getIndirizzoLegale() != null) {
-			customerResponse.setVia(customer.getIndirizzoLegale().getVia());
-			customerResponse.setCivico(customer.getIndirizzoLegale().getCivico());
-			customerResponse.setLocalita(customer.getIndirizzoLegale().getLocalita());
-			customerResponse.setCap(customer.getIndirizzoLegale().getCap());
-			customerResponse.setComune(customer.getIndirizzoLegale().getComune()); // Se vuoi mostrare anche il comune
-		}
-		return customerResponse;
-	}
-
-
-
 }
